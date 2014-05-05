@@ -226,7 +226,7 @@ and change it to:
 if(!_donotusekey) then {
     // Lock vehicle
     _object setvehiclelock "locked";
-    _vehicle setVariable ["MF_Tow_Cannot_Tow",true,true];
+    _object setVariable ["MF_Tow_Cannot_Tow",true,true];
 };
 ```
 
@@ -243,7 +243,7 @@ and change it to:
 ```sqf
 if(_ownerID != "0" and !(_object isKindOf "Bicycle")) then {
 	_object setvehiclelock "locked";
-	_vehicle setVariable ["MF_Tow_Cannot_Tow",true,true];
+	_object setVariable ["MF_Tow_Cannot_Tow",true,true];
 };
 ```
 
