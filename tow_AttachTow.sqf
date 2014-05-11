@@ -3,7 +3,7 @@
  * The action for attaching the tow to another vehicle. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.1.0
+ * Version: 1.1.1
  * MIT Licence
  **/
 
@@ -46,6 +46,16 @@ if(_IsNearVehicle > 0) then {
 	// Check if the vehicle we want to tow is locked
 	if((_vehicle getVariable ["MF_Tow_Cannot_Tow", false])) exitWith {
 		cutText [format["Cannot tow %1 because it is locked.", _vehicleNameText], "PLAIN DOWN"];
+	};
+	
+	// Check that the vehicle we want to tow is not already being towed by something else.
+	if((_vehicle getVariable ["MFTowInTow", false])) exitWith {
+		cutText [format["Cannot tow %1 because it is already being towed by another vehicle.", _vehicleNameText], "PLAIN DOWN"];
+	};
+	
+	// Check that the vehicle we want to tow is not already towing something else
+	if(!MF_Tow_Multi_Towing && (_vehicle getVariable ["MFTowIsTowing", false])) exitWith {
+		cutText [format["Cannot tow %1 because it is already towing another vehicle.", _vehicleNameText], "PLAIN DOWN"];
 	};
 	
 	_finished = false;
@@ -125,7 +135,8 @@ if(_IsNearVehicle > 0) then {
 				// Detach the player from the tow truck
 				detach player;
 				
-				_towTruck setVariable ["MFTowInTow", true, true];
+				_vehicle setVariable ["MFTowInTow", true, true];
+				_towTruck setVariable ["MFTowIsTowing", true, true];
 				_towTruck setVariable ["MFTowVehicleInTow", _vehicle, true];
 				
 				cutText [format["%1 has been attached to %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];

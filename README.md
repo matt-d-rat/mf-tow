@@ -18,7 +18,9 @@ MF-Tow is also fully compatible with the popular '=BTC=_Logistic (DayZ Epoch Ver
 - Disable towing of locked vehicles (optional)
 - Requires a player to have a toolbox in their inventory in order to be able to attach a tow.
 
-## Configuring Tow Vehicles ##
+## Configuration ##
+
+### Configuring tow vehicles & towable vehicles ###
 
 [Download](https://github.com/matt-d-rat/mf-tow/archive/master.zip) and extract the zip file to a folder called ```mf-tow```, inside you will find a file called ```init.sqf```, open this file up in a text editor.
 
@@ -54,8 +56,18 @@ So for example, we can see that the code above permits the ```ArmoredSUV_PMC``` 
 To add a new vehicle which can be used as a towing vehicle, add a new case to the switch statement and define an array of the types of vehicles which can be towed (be careful not to have a trailing comma after the last entry in the array!):
 
 ```sqf
-	case "Pickup_PK_INS_DZE": {_array = ["Motorcycle","Car"];};
+case "Pickup_PK_INS_DZE": {_array = ["Motorcycle","Car"];};
 ```
+
+### Enabling Multi-tow ###
+
+By default, towing vehicles which are currently towing another vehicle is disabled (patched in v1.1.1). To enable this functionality, set the ```MF_Tow_Multi_Towing``` variable in ```init.sqf``` to true.
+
+```sqf
+MF_Tow_Multi_Towing = true; // Warning, this is not recommended!
+```
+
+Although this may seem like a nice feature, in reality the only purpose it will probably serve is to allow people to troll one another. The choice is entirely yours though :-).
 
 ## Installation Guide ##
 
@@ -239,6 +251,10 @@ __Step 18: Repack ```dayz_server.pbo``` and upload it to your server.
 1. Vehicles which have been towed and detached must be entered at least once in order for the server to update the vehicles world postion, ensuring the vehicle remain at that position on server restart.
 
 ### Change Log ###
+
+#### v1.1.1 ###
+- Fixed exploit which allowed players to tow vehicles which were already being towed.
+- Fixed exploit which allowed players to tow vehicles which were already towing another vehicle. This functionality can be turned back on via the ```MF_Tow_Multi_Towing``` config param being set to true (default value is false). Be warned, turning this on produces "interesting" results and probably only serves as a means for trolling.
 
 #### v1.1.0 ###
 - Non-breaking changes to the check for whether the cursor target is a towable vehicle.

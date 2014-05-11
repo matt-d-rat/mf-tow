@@ -3,11 +3,11 @@
  * The action for detaching the tow from another vehicle. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.1.0
+ * Version: 1.1.1
  * MIT Licence
  **/
  
-private ["_vehicle","_started","_finished","_animState","_isMedic","_vehicleNameText","_towTruckNameText","_towTruck","_inTow","_hasToolbox"];
+private ["_vehicle","_started","_finished","_animState","_isMedic","_vehicleNameText","_towTruckNameText","_towTruck","_isTowing","_hasToolbox"];
 
 if(DZE_ActionInProgress) exitWith { cutText [(localize "str_epoch_player_96") , "PLAIN DOWN"] };
 DZE_ActionInProgress = true;
@@ -20,14 +20,14 @@ _towTruck = _this select 3;
 _towTruckNameText = [_towTruck] call MF_Tow_Get_Vehicle_Name;
 
 // exit if no vehicle is in tow.
-_inTow = _towTruck getVariable ["MFTowInTow", false];
+_isTowing = _towTruck getVariable ["MFTowIsTowing", false];
 
-if(_inTow) then {
+if(_isTowing) then {
 
 	// Select the vehicle currently in tow
 	_vehicle = _towTruck getVariable ["MFTowVehicleInTow", objNull];
 
-	if(!(isNull _towTruck)) then {
+	if(!(isNull _vehicle)) then {
 		_vehicleNameText = [_vehicle] call MF_Tow_Get_Vehicle_Name;
 		_finished = false;		
 		_hasToolbox = "ItemToolbox" in (items player);
@@ -75,14 +75,16 @@ if(_inTow) then {
 		
 			detach _vehicle;
 			detach player;
-			_towTruck setVariable ["MFTowInTow", false, true];
+			
+			_vehicle setVariable ["MFTowInTow", false, true];
+			_towTruck setVariable ["MFTowIsTowing", false, true];
 			_towTruck setVariable ["MFTowVehicleInTow", objNull, true];
 			cutText [format["%1 has been detached from %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 			
 			_vehicle setvelocity [0,0,1];
 		};
 	} else {
-		_towTruck setVariable ["MFTowInTow", false, true];
+		_towTruck setVariable ["MFTowIsTowing", false, true];
 		_towTruck setVariable ["MFTowVehicleInTow", objNull, true];	
 	};
 } else {

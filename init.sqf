@@ -3,15 +3,16 @@
  * The main script for initalising towing functionality. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.1.0
+ * Version: 1.1.1
  * MIT Licence
  **/
 
 private ["_cursorTarget", "_towableVehicles", "_towableVehiclesTotal"];
 
 // Public variables
-MF_Tow_Base_Path		= "addons\mf-tow"; 			// The base path to the MF-Tow Folder.
-MF_Tow_Distance			= 10;						// Minimum distance (in meters) away from vehicle the tow truck must be to tow.
+MF_Tow_Base_Path		= "addons\mf-tow"; 		// The base path to the MF-Tow Folder.
+MF_Tow_Distance			= 10;					// Minimum distance (in meters) away from vehicle the tow truck must be to tow.
+MF_Tow_Multi_Towing	 	= false;				// Allow a vehicle which is towing another vehicle already to be towed by another tow. Disabled by default.
 
 // Functions
 
@@ -94,7 +95,7 @@ _towableVehiclesTotal = count (_towableVehicles);
 // Add the action to the players scroll wheel menu if the cursor target is a vehicle which can tow.
 if(_towableVehiclesTotal > 0) then {
 	if (s_player_towing < 0) then {
-		if(!(_cursorTarget getVariable ["MFTowInTow", false])) then {
+		if(!(_cursorTarget getVariable ["MFTowIsTowing", false])) then {
 			s_player_towing = player addAction ["Attach Tow", format["%1\tow_AttachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];				
 		} else {
 			s_player_towing = player addAction ["Detach Tow", format["%1\tow_DetachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];			
