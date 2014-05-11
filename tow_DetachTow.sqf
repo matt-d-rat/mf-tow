@@ -3,7 +3,7 @@
  * The action for detaching the tow from another vehicle. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.0.0
+ * Version: 1.1.0
  * MIT Licence
  **/
  

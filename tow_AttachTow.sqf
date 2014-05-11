@@ -3,11 +3,11 @@
  * The action for attaching the tow to another vehicle. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.0.0
+ * Version: 1.1.0
  * MIT Licence
  **/
 
-private ["_vehicle","_started","_finished","_animState","_isMedic","_abort","_vehicleNameText","_towTruckNameText","_findNearestVehicles","_findNearestVehicle","_IsNearVehicle","_towTruck","_towableVehicles","_vehicleOffset","_towTruckOffset","_hasToolbox"];
+private ["_vehicle","_started","_finished","_animState","_isMedic","_abort","_vehicleNameText","_towTruckNameText","_findNearestVehicles","_findNearestVehicle","_IsNearVehicle","_towTruck","_towableVehicles","_towableVehiclesTotal","_vehicleOffsetY","_towTruckOffsetY","_offsetZ","_hasToolbox"];
 
 if(DZE_ActionInProgress) exitWith { cutText [(localize "str_epoch_player_96") , "PLAIN DOWN"] };
 DZE_ActionInProgress = true;
@@ -18,6 +18,7 @@ s_player_towing = 1;
 // Tow Truck
 _towTruck = _this select 3;
 _towableVehicles = [_towTruck] call MF_Tow_Towable_Array;
+_towableVehiclesTotal = count (_towableVehicles);
 _towTruckNameText = [_towTruck] call MF_Tow_Get_Vehicle_Name;
 
 // Get all nearby vehicles that can be towed by the towTruck within the minimum tow distance
@@ -31,7 +32,7 @@ _findNearestVehicle = [];
 		
 _IsNearVehicle = count (_findNearestVehicle);
 
-if(_IsNearVehicle >= 1) then {
+if(_IsNearVehicle > 0) then {
 	// select the nearest one
 	_vehicle = _findNearestVehicle select 0;
 	_vehicleNameText = [_vehicle] call MF_Tow_Get_Vehicle_Name;
@@ -86,26 +87,38 @@ if(_IsNearVehicle >= 1) then {
 
 	if (_finished) then {
 		if(((vectorUp _vehicle) select 2) > 0.5) then {
-			if(typeOf _towTruck in MF_Tow_Vehicles ) then {
-				// Calculate the offset positions depending on the kind of tow truck and vehicle
-				if (_towTruck isKindOf "SUV_Base_EP1" || _towTruck isKindOf "ArmoredSUV_Base_PMC") then {
-					_towTruckOffset = 0.9;
-				} else {
-					_towTruckOffset = 0.8
+			if( _towableVehiclesTotal > 0 ) then {
+				_towTruckOffsetY = 0.8;
+				_vehicleOffsetY = 0.8;
+				_offsetZ = 0.1;
+				
+				// Calculate the offset positions depending on the kind of tow truck				
+				switch(true) do {
+					case (_towTruck isKindOf "ArmoredSUV_Base_PMC");
+					case (_towTruck isKindOf "SUV_Base_EP1") : {
+						_towTruckOffsetY = 0.9;
+					};
+					case (_towTruck isKindOf "UAZ_Base" && !(_vehicle isKindOf "UAZ_Base")) : {
+						_offsetZ = 1.8;
+					};
 				};
 				
-				if (_vehicle isKindOf "Truck" && !(_towTruck isKindOf "Truck")) then {
-					_vehicleOffset = 0.9;
-				} else {
-					_vehicleOffset = 0.8
+				// Calculate the offset positions depending on the kind of vehicle
+				switch(true) do {
+					case (_vehicle isKindOf "Truck" && !(_towTruck isKindOf "Truck")) : {
+						_vehicleOffsetY = 0.9;
+					};
+					case (_vehicle isKindOf "UAZ_Base" && !(_towTruck isKindOf "UAZ_Base")) : {
+						_offsetZ = -1.8;
+					};
 				};
 					
 				// Attach the vehicle to the tow truck
 				_vehicle attachTo [ _towTruck,
 					[
 						0,
-						(boundingBox _towTruck select 0 select 1) * _towTruckOffset + (boundingBox _vehicle select 0 select 1) * _vehicleOffset,
-						(boundingBox _towTruck select 0 select 2) - (boundingBox _vehicle select 0 select 2) + 0.1
+						(boundingBox _towTruck select 0 select 1) * _towTruckOffsetY + (boundingBox _vehicle select 0 select 1) * _vehicleOffsetY,
+						(boundingBox _towTruck select 0 select 2) - (boundingBox _vehicle select 0 select 2) + _offsetZ
 					]
 				];
 				

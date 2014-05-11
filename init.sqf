@@ -3,30 +3,15 @@
  * The main script for initalising towing functionality. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.0.0
+ * Version: 1.1.0
  * MIT Licence
  **/
 
-private ["_cursorTarget", "_typeOfCursorTarget"];
+private ["_cursorTarget", "_towableVehicles", "_towableVehiclesTotal"];
 
 // Public variables
 MF_Tow_Base_Path		= "addons\mf-tow"; 			// The base path to the MF-Tow Folder.
 MF_Tow_Distance			= 10;						// Minimum distance (in meters) away from vehicle the tow truck must be to tow.
-
-// The vehicles which can tow
-MF_Tow_Vehicles	= [
-	"ATV_CZ_EP1",
-	"ATV_US_EP1",
-	"hilux1_civil_3_open",
-	"hilux1_civil_3_open_EP1",
-	"ArmoredSUV_PMC",
-	"ArmoredSUV_PMC_DZ",
-	"ArmoredSUV_PMC_DZE",
-	"HMMWV_M1151_M2_CZ_DES_EP1_DZE",
-	"HMMWV_M1151_M2_CZ_DES_EP1",
-	"tractor",
-	"TowingTractor"
-];
 
 // Functions
 
@@ -49,6 +34,7 @@ MF_Tow_Towable_Array =
 		case "ArmoredSUV_PMC":					{_array = ["Motorcycle","Car"];};
 		case "ArmoredSUV_PMC_DZ": 				{_array = ["Motorcycle","Car"];};
 		case "ArmoredSUV_PMC_DZE": 				{_array = ["Motorcycle","Car"];};
+		case "UAZ_Unarmed_TK_CIV_EP1":			{_array = ["Motorcycle","Car"];};
 		case "HMMWV_M1151_M2_CZ_DES_EP1_DZE": 	{_array = ["Motorcycle","Car","Truck"];};
 		case "HMMWV_M1151_M2_CZ_DES_EP1": 		{_array = ["Motorcycle","Car","Truck"];};
 		case "tractor": 						{_array = ["Motorcycle","Car","Truck"];};
@@ -63,8 +49,14 @@ MF_Tow_Towable_Array =
  **/
 MF_Tow_Animate_Player_Tow_Action =
 {
-	private ["_towTruck"];
+	private ["_towTruck","_offsetZ"];
 	_towTruck = _this select 0;
+	_offsetZ = 0.1;
+	
+	// Bounding box on UAZ is screwed, offset z-axis correctly
+	if(_towTruck isKindOf "UAZ_Base") then {
+		_offsetZ = 1.8;
+	};
 	
 	[player,20,true,(getPosATL player)] spawn player_alertZombies; // Alert nearby zombies
 	[1,1] call dayz_HungerThirst; // Use some hunger and thirst to perform the action
@@ -74,7 +66,7 @@ MF_Tow_Animate_Player_Tow_Action =
 		[
 			(boundingBox _towTruck select 1 select 0),
 			(boundingBox _towTruck select 0 select 1) + 1,
-			(boundingBox _towTruck select 0 select 2) - (boundingBox player select 0 select 2)
+			(boundingBox _towTruck select 0 select 2) - (boundingBox player select 0 select 2) + _offsetZ
 		]
 	];
 
@@ -96,10 +88,11 @@ MF_Tow_Get_Vehicle_Name =
 
 // Initialise script
 _cursorTarget = cursorTarget;
-_typeOfCursorTarget = typeOf _cursorTarget;
+_towableVehicles = [_cursorTarget] call MF_Tow_Towable_Array;
+_towableVehiclesTotal = count (_towableVehicles);
 
 // Add the action to the players scroll wheel menu if the cursor target is a vehicle which can tow.
-if(_typeOfCursorTarget in MF_Tow_Vehicles) then {
+if(_towableVehiclesTotal > 0) then {
 	if (s_player_towing < 0) then {
 		if(!(_cursorTarget getVariable ["MFTowInTow", false])) then {
 			s_player_towing = player addAction ["Attach Tow", format["%1\tow_AttachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];				

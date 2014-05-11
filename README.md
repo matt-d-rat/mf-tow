@@ -20,28 +20,9 @@ MF-Tow is also fully compatible with the popular '=BTC=_Logistic (DayZ Epoch Ver
 
 ## Configuring Tow Vehicles ##
 
-[Download](https://github.com/matt-d-rat/mf-tow/archive/master.zip) and extract the zip file to a folder called ```mf-tow```, inside you will find a file called ```init.sqf```, open this file up ina text editor.
+[Download](https://github.com/matt-d-rat/mf-tow/archive/master.zip) and extract the zip file to a folder called ```mf-tow```, inside you will find a file called ```init.sqf```, open this file up in a text editor.
 
-There are two things you need to configure to set which vehicles can tow, and what type of vehicles they can tow:
-
-Lets start with the tow vehicles array, add the [class names](https://docs.google.com/spreadsheet/ccc?key=0AjNSjNkQ9qIVdHpCU0pXZVdfZmNZZFlpNHEwQUp2bVE&usp=sharing#gid=0) of the vehicles you wish to allow to tow other vehicles to this array (be careful not to have a trailing comma after the last entry in the array!):
-```sqf
-MF_Tow_Vehicles	= [
-	"ATV_CZ_EP1",
-	"ATV_US_EP1",
-	"hilux1_civil_3_open",
-	"hilux1_civil_3_open_EP1",
-	"ArmoredSUV_PMC",
-	"ArmoredSUV_PMC_DZ",
-	"ArmoredSUV_PMC_DZE",
-	"HMMWV_M1151_M2_CZ_DES_EP1_DZE",
-	"HMMWV_M1151_M2_CZ_DES_EP1",
-	"tractor",
-	"TowingTractor"
-];
-```
-
-Next we need to configure what types of vehicles can be towed by each of the vehicles defined above, add them to the MF_Tow_Towable_Array function as seen below:
+Locate the ```MF_Tow_Towable_Array``` function, this function defines which vehicles can tow (declared as cases for each vehicle [class name](https://docs.google.com/spreadsheet/ccc?key=0AjNSjNkQ9qIVdHpCU0pXZVdfZmNZZFlpNHEwQUp2bVE&usp=sharing#gid=0) in the switch statement), and the types of vehicles that each case is able to tow (defined as an array of vehicle types).
 
 ```sqf
 MF_Tow_Towable_Array =
@@ -68,8 +49,13 @@ MF_Tow_Towable_Array =
 	_array
 };
 ```
-
 So for example, we can see that the code above permits the ```ArmoredSUV_PMC``` to tow vehicles which are of either a type of ```Motorcycle``` or ```Car```. Nothing else.
+
+To add a new vehicle which can be used as a towing vehicle, add a new case to the switch statement and define an array of the types of vehicles which can be towed (be careful not to have a trailing comma after the last entry in the array!):
+
+```sqf
+	case "Pickup_PK_INS_DZE": {_array = ["Motorcycle","Car"];};
+```
 
 ## Installation Guide ##
 
@@ -253,6 +239,18 @@ __Step 18: Repack ```dayz_server.pbo``` and upload it to your server.
 1. Vehicles which have been towed and detached must be entered at least once in order for the server to update the vehicles world postion, ensuring the vehicle remain at that position on server restart.
 
 ### Change Log ###
+
+#### v1.1.0 ###
+- Non-breaking changes to the check for whether the cursor target is a towable vehicle.
+- Deprecated MF_Tow_Towable variable as it is no longer used as a check condition.
+- Vehicles which can tow and be towed are now maintained in MF_Tow_Towable_Array function, removing the need to
+maintain two seperate arrays.
+- Updated the install guide to reflect the changes above.
+- Fixed the z-axis offset issues with the UAZ as the tow vehicle and as the towable vehicle which caused the UAZ to either be in the air or under ground during towing.
+- Fixed player z-axis offset to the UAZ when in animation state. This was again due to the bounding box data on the UAZ being completely incorrect.
+
+#### v1.0.1 ###
+- Corrected a minor typo in the install guide.
 
 #### v1.0.0 ###
 - Initial release.
