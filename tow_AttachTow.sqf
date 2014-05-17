@@ -3,7 +3,7 @@
  * The action for attaching the tow to another vehicle. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.1.1
+ * Version: 1.1.2
  * MIT Licence
  **/
 
@@ -58,6 +58,11 @@ if(_IsNearVehicle > 0) then {
 		cutText [format["Cannot tow %1 because it is already towing another vehicle.", _vehicleNameText], "PLAIN DOWN"];
 	};
 	
+	// Check if the vehicle has anyone in it
+	if ((count (crew _vehicle)) != 0) exitWith {
+		cutText [format["Cannot tow %1 because it has people in it.", _vehicleNameText], "PLAIN DOWN"];
+	};
+	
 	_finished = false;
 	
 	[_towTruck] call MF_Tow_Animate_Player_Tow_Action;
@@ -73,14 +78,23 @@ if(_IsNearVehicle > 0) then {
 		if (_isMedic) then {
 			_started = true;
 		};
+		
 		if (_started and !_isMedic) then {
 			r_doLoop = false;
 			_finished = true;
 		};
+		
+		// Check if anyone enters the vehicle while we are attaching the tow and stop the action
+		if ((count (crew _vehicle)) != 0) then {
+			cutText [format["Towing aborted because the %1 was entered by another player.", _vehicleNameText], "PLAIN DOWN"];
+			r_interrupt = true;
+		};
+		
 		if (r_interrupt) then {
 			detach player;
 			r_doLoop = false;
 		};
+		
 		sleep 0.1;
 	};
 	r_doLoop = false;
@@ -132,8 +146,8 @@ if(_IsNearVehicle > 0) then {
 					]
 				];
 				
-				// Detach the player from the tow truck
 				detach player;
+				_vehicle lock true; // Disable entering the vehicle while it is in tow.
 				
 				_vehicle setVariable ["MFTowInTow", true, true];
 				_towTruck setVariable ["MFTowIsTowing", true, true];

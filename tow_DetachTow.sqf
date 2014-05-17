@@ -3,7 +3,7 @@
  * The action for detaching the tow from another vehicle. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.1.1
+ * Version: 1.1.2
  * MIT Licence
  **/
  
@@ -72,10 +72,10 @@ if(_isTowing) then {
 		};
 
 		if (_finished) then {
-		
 			detach _vehicle;
 			detach player;
-			
+			_vehicle lock false; // Enable players to re-enter the vehicle now it has been detached.
+						
 			_vehicle setVariable ["MFTowInTow", false, true];
 			_towTruck setVariable ["MFTowIsTowing", false, true];
 			_towTruck setVariable ["MFTowVehicleInTow", objNull, true];
