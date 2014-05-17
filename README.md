@@ -252,6 +252,10 @@ __Step 18: Repack ```dayz_server.pbo``` and upload it to your server.
 
 ### Change Log ###
 
+#### v1.1.2 ###
+- Fixed bug which allowed players to enter towed vehicles, allowing them to ghost through walls to gain access to modular bases.
+- Added a check to interupt the attaching of the tow if a player enters the vehicle during the attachment phase.
+
 #### v1.1.1 ###
 - Fixed exploit which allowed players to tow vehicles which were already being towed.
 - Fixed exploit which allowed players to tow vehicles which were already towing another vehicle. This functionality can be turned back on via the ```MF_Tow_Multi_Towing``` config param being set to true (default value is false). Be warned, turning this on produces "interesting" results and probably only serves as a means for trolling.

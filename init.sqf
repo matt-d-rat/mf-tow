@@ -3,7 +3,7 @@
  * The main script for initalising towing functionality. 
  *
  * Created by Matt Fairbrass (matt_d_rat)
- * Version: 1.1.1
+ * Version: 1.1.2
  * MIT Licence
  **/
 
