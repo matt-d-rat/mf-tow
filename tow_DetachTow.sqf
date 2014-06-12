@@ -72,9 +72,16 @@ if(_isTowing) then {
 		};
 
 		if (_finished) then {
+		
+		//force save
+		PVDZE_veh_Update = [_vehicle, "all"];
+		publicVariableServer "PVDZE_veh_Update";
+		//force save
+		
 			detach _vehicle;
-			detach player;
-			_vehicle lock false; // Enable players to re-enter the vehicle now it has been detached.
+			
+		//Can`t sit in a car if car towing
+		_vehicle setVariable ["VehicleInTow", false, true];
 						
 			_vehicle setVariable ["MFTowInTow", false, true];
 			_towTruck setVariable ["MFTowIsTowing", false, true];
