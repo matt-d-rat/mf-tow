@@ -54,7 +54,7 @@ if(_IsNearVehicle > 0) then {
 	};
 	
 	// Check that the vehicle we want to tow is not already towing something else
-	if(!MF_Tow_Multi_Towing && (_vehicle getVariable ["MFTowIsTowing", false])) exitWith {
+	if(!(MF_Tow_Multi_Towing) && (_vehicle getVariable ["MFTowIsTowing", false])) exitWith {
 		cutText [format["Cannot tow %1 because it is already towing another vehicle.", _vehicleNameText], "PLAIN DOWN"];
 	};
 	
@@ -71,6 +71,9 @@ if(_IsNearVehicle > 0) then {
 	_animState = animationState player;
 	r_doLoop = true;
 	_started = false;
+
+	cutText [format["Start tow %1...", _vehicleNameText], "PLAIN DOWN"];
+	[player,"repair",0,false,10] call dayz_zombieSpeak;
 
 	while {r_doLoop} do {
 		_animState = animationState player;
@@ -146,8 +149,20 @@ if(_IsNearVehicle > 0) then {
 					]
 				];
 				
-				detach player;
-				_vehicle lock true; // Disable entering the vehicle while it is in tow.
+				//detach player;
+				//MF_Tow_Multi_Towing_vehicle lock true; // Disable entering the vehicle while it is in tow.
+				
+				//***only works with player who tow, help***
+				//Can`t sit in a car if car towing
+				_vehicle addEventHandler ["GetIn", {
+				if (_this select 0 getVariable ["VehicleInTow", true]) then {
+				player action ["eject", _this select 0];
+				cutText [format["Can`t sit in a car if car towing"], "PLAIN DOWN"];
+				};}];
+				_vehicle setVariable ["VehicleInTow", true, true];
+				//Can`t sit in a car if car towing
+				//***only works with player who tow, help***
+				
 				
 				_vehicle setVariable ["MFTowInTow", true, true];
 				_towTruck setVariable ["MFTowIsTowing", true, true];
