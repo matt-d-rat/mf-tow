@@ -62,17 +62,6 @@ MF_Tow_Animate_Player_Tow_Action =
 	[player,20,true,(getPosATL player)] spawn player_alertZombies; // Alert nearby zombies
 	[1,1] call dayz_HungerThirst; // Use some hunger and thirst to perform the action
 	
-	// Attach the player to the tow truck temporarily for safety so that they aren't accidentally hit by the vehicle when it gets attached
-	player attachTo [_towTruck, 
-		[
-			(boundingBox _towTruck select 1 select 0),
-			(boundingBox _towTruck select 0 select 1) + 1,
-			(boundingBox _towTruck select 0 select 2) - (boundingBox player select 0 select 2) + _offsetZ
-		]
-	];
-
-	player setDir 270;
-	player setPos (getPos player);
 	player playActionNow "Medic"; // Force the animation
 };
 
@@ -94,12 +83,17 @@ _towableVehiclesTotal = count (_towableVehicles);
 
 // Add the action to the players scroll wheel menu if the cursor target is a vehicle which can tow.
 if(_towableVehiclesTotal > 0) then {
-	if (s_player_towing < 0) then {
-		if(!(_cursorTarget getVariable ["MFTowIsTowing", false])) then {
-			s_player_towing = player addAction ["Attach Tow", format["%1\tow_AttachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];				
-		} else {
-			s_player_towing = player addAction ["Detach Tow", format["%1\tow_DetachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];			
-		};
+	if (s_player_towing < 0) then {	
+		if(!(_cursorTarget getVariable ["MF_Tow_Cannot_Tow", false])) then {
+			if(!(_cursorTarget getVariable ["MFTowIsTowing", false])) then {
+						if(!(_cursorTarget getVariable ["MFTowInTow", false])) then {
+				s_player_towing = player addAction [("<t color=""#dddd00"">" + ("Nearest Tow vehicle ...") +"</t>"), format["%1\tow_AttachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];
+	};			
+			} else {
+				s_player_towing = player addAction [("<t color=""#dddd00"">" + ("Detach Tow...") +"</t>"), format["%1\tow_DetachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];	
+																		
+	};
+																		};
 	};
 } 
 else {
