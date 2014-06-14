@@ -163,6 +163,11 @@ if(_IsNearVehicle > 0) then {
 				//Can`t sit in a car if car towing
 				//***only works with player who tow, help***
 				
+				if !(MF_Tow_Multi_Towing_BTC) then {
+				_vehicle setVariable ["BTC_Cannot_Lift",true,true];
+				_towTruck setVariable ["BTC_Cannot_Lift",true,true];
+				};
+				
 				
 				_vehicle setVariable ["MFTowInTow", true, true];
 				_towTruck setVariable ["MFTowIsTowing", true, true];
