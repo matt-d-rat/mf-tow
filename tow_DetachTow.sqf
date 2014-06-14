@@ -82,6 +82,11 @@ if(_isTowing) then {
 			
 		//Can`t sit in a car if car towing
 		_vehicle setVariable ["VehicleInTow", false, true];
+		
+		if !(MF_Tow_Multi_Towing_BTC) then {
+		_vehicle setVariable ["BTC_Cannot_Lift",false,true];
+		_towTruck setVariable ["BTC_Cannot_Lift",false,true];
+		};
 						
 			_vehicle setVariable ["MFTowInTow", false, true];
 			_towTruck setVariable ["MFTowIsTowing", false, true];
