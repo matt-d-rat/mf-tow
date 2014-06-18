@@ -94,7 +94,18 @@ if(_isTowing) then {
 			cutText [format["%1 has been detached from %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 			
 			_vehicle setvelocity [0,0,1];
+	} else {
+				r_interrupt = false;
+			
+				if (vehicle player == player) then {
+					[objNull, player, rSwitchMove,""] call RE;
+					player playActionNow "stop";
+				};
+				_abort = true;
+				cutText [format["Failed to attach %1 to %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 		};
+		
+		
 	} else {
 		_towTruck setVariable ["MFTowIsTowing", false, true];
 		_towTruck setVariable ["MFTowVehicleInTow", objNull, true];	
