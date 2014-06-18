@@ -102,16 +102,6 @@ if(_IsNearVehicle > 0) then {
 	};
 	r_doLoop = false;
 
-	if(!_finished) then {
-	
-		r_interrupt = false;
-			
-		if (vehicle player == player) then {
-			[objNull, player, rSwitchMove,""] call RE;
-			player playActionNow "stop";
-		};
-		_abort = true;
-	};
 
 	if (_finished) then {
 	
@@ -187,10 +177,18 @@ if(_IsNearVehicle > 0) then {
 				
 				cutText [format["%1 has been attached to %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 			};	
-		} else {
-			cutText [format["Failed to attach %1 to %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 		};
-	};
+	} else {
+				r_interrupt = false;
+			
+				if (vehicle player == player) then {
+					[objNull, player, rSwitchMove,""] call RE;
+					player playActionNow "stop";
+				};
+				_abort = true;
+				cutText [format["Failed to attach %1 to %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
+		};
+		
 } else {
 	cutText [format["No vehicles nearby to tow. Move within %1m of a vehicle.", MF_Tow_Distance], "PLAIN DOWN"];
 };
