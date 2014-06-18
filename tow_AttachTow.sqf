@@ -103,6 +103,17 @@ if(_IsNearVehicle > 0) then {
 	r_doLoop = false;
 
 	if(!_finished) then {
+	
+		// Check that the vehicle we want to tow is not already being towed by something else.
+	if((_vehicle getVariable ["MFTowInTow", false])) exitWith {
+		cutText [format["Cannot tow %1 because it is already being towed by another vehicle.", _vehicleNameText], "PLAIN DOWN"];
+	};
+	
+	// Check that the vehicle we want to tow is not already towing something else
+	if(!(MF_Tow_Multi_Towing) && (_vehicle getVariable ["MFTowIsTowing", false])) exitWith {
+		cutText [format["Cannot tow %1 because it is already towing another vehicle.", _vehicleNameText], "PLAIN DOWN"];
+	};
+	
 		r_interrupt = false;
 			
 		if (vehicle player == player) then {
