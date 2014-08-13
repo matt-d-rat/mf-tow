@@ -7,7 +7,7 @@
  * MIT Licence
  **/
 
-private ["_vehicle","_started","_finished","_animState","_isMedic","_abort","_vehicleNameText","_towTruckNameText","_findNearestVehicles","_findNearestVehicle","_IsNearVehicle","_towTruck","_towableVehicles","_towableVehiclesTotal","_vehicleOffsetY","_towTruckOffsetY","_offsetZ","_hasToolbox"];
+private ["_vehicle","_started","_finished","_animState","_isMedic","_abort","_vehicleNameText","_towTruckNameText","_findNearestVehicles","_findNearestVehicle","_IsNearVehicle","_towTruck","_towableVehicles","_towableVehiclesTotal","_vehicleOffsetY","_towTruckOffsetY","_offsetZ","_hasToolbox","_towable"];
 
 if(DZE_ActionInProgress) exitWith { cutText [(localize "str_epoch_player_96") , "PLAIN DOWN"] };
 DZE_ActionInProgress = true;
@@ -26,7 +26,20 @@ _findNearestVehicles = nearestObjects [_towTruck, _towableVehicles, MF_Tow_Dista
 _findNearestVehicle = [];
 {
 	if (alive _x && _towTruck != _x) then {
-		_findNearestVehicle set [(count _findNearestVehicle),_x];
+		_towable = false;
+	
+		if ( _x isKindOf "Truck" || _x isKindOf "Wheeled_APC" ) then
+		{
+			if ( _x isKindOf "Truck" && "Truck" in _towableVehicles ) then { _towable = true; };
+			if ( _x isKindOf "Wheeled_APC" && "Wheeled_APC" in _towableVehicles ) then { _towable = true; };
+		} else {
+			_towable = true;
+		};
+		
+		if (_towable) then
+		{
+			_findNearestVehicle set [(count _findNearestVehicle),_x];
+		};
 	};
 } foreach _findNearestVehicles;
 		

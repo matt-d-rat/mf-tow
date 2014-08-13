@@ -26,6 +26,26 @@ MF_Tow_Towable_Array =
     _towTruck = _this select 0;
 	_array = [];
 	
+	if ( _towTruck isKindOf "Car" ) then
+	{
+		_array = ["Motorcycle","Car"];
+	};
+	
+	if ( _towTruck isKindOf "Truck" ) then
+	{
+		_array = ["Motorcycle","Car","Truck"];
+	};
+	
+	if ( _towTruck isKindOf "Wheeled_APC" ) then
+	{
+		_array = ["Motorcycle","Car","Truck","Wheeled_APC"];
+	};
+	
+	if ( _towTruck isKindOf "Tank" ) then
+	{
+		_array = ["Motorcycle","Car","Truck","Wheeled_APC","Tracked_APC","Air"];
+	};
+	
 	switch (typeOf _towTruck) do
 	{
 		case "ATV_CZ_EP1": 						{_array = ["Motorcycle"];};
