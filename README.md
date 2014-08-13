@@ -85,7 +85,7 @@ __Step 2:__ In your ```MPMissions``` folder (eg, DayZ_Epoch_11.Chernarus), creat
 
 __Step 3:__ Copy the ```mf-tow``` folder into the ```addons``` folder.
 
-__Step 4:__ Add ```[] execVM "addons\mf-tow\init.sqf";`` at the end of your ```init.sqf```
+__Step 4:__ Add ```[] execVM "addons\mf-tow\init.sqf";``` at the end of your ```init.sqf```
 
 
 ### Known Issues ###
