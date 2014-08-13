@@ -108,21 +108,37 @@ MF_Tow_Get_Vehicle_Name =
 };
 
 // Initialise script
-_cursorTarget = cursorTarget;
-_towableVehicles = [_cursorTarget] call MF_Tow_Towable_Array;
-_towableVehiclesTotal = count (_towableVehicles);
+if (isnil "towtracker") then {towtracker = true;};
 
-// Add the action to the players scroll wheel menu if the cursor target is a vehicle which can tow.
-if(_towableVehiclesTotal > 0) then {
-	if (s_player_towing < 0) then {
-		if(!(_cursorTarget getVariable ["MFTowIsTowing", false])) then {
-			s_player_towing = player addAction ["Attach Tow", format["%1\tow_AttachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];				
-		} else {
-			s_player_towing = player addAction ["Detach Tow", format["%1\tow_DetachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];			
+if (towtracker) then
+{
+	[]spawn
+	{
+		private["_cursorTarget", "_towableVehicles", "_towableVehiclesTotal"];
+		
+		while {true} do
+		{
+			_cursorTarget = cursorTarget;
+			_towableVehicles = [_cursorTarget] call MF_Tow_Towable_Array;
+			_towableVehiclesTotal = count (_towableVehicles);
+
+			if(_towableVehiclesTotal > 0) then {
+				if (s_player_towing < 0) then {
+					if(!(_cursorTarget getVariable ["MFTowIsTowing", false])) then {
+						s_player_towing = player addAction ["<t color='#FFFF00'>Attach Tow</t>", format["%1\tow_AttachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];				
+					} else {
+						s_player_towing = player addAction ["<t color='#FFFF00'>Detach Tow</t>", format["%1\tow_DetachTow.sqf", MF_Tow_Base_Path], _cursorTarget, 0, false, true, "",""];			
+					};
+				};
+			} 
+			else {
+				player removeAction s_player_towing;
+				s_player_towing = -1;
+			};
+			Sleep 2;
 		};
 	};
-} 
-else {
-	player removeAction s_player_towing;
-	s_player_towing = -1;
+	towtracker = false;
 };
+waituntil {!alive player ; sleep 2;};
+towtracker = true;
