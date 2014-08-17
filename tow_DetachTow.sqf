@@ -77,13 +77,15 @@ if(_isTowing) then {
 			_vehicle lock false; // Enable players to re-enter the vehicle now it has been detached.
 			VDZE_veh_Lock = [_vehicle,false];
 			publicVariable "PVDZE_veh_Lock";
-			
+
 			_vehicle setVariable ["MFTowInTow", false, true];
 			_towTruck setVariable ["MFTowIsTowing", false, true];
 			_towTruck setVariable ["MFTowVehicleInTow", objNull, true];
 			cutText [format["%1 has been detached from %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 			
 			_vehicle setvelocity [0,0,1];
+			PVDZE_veh_Update = [_vehicle,"all"];
+			publicVariableServer "PVDZE_veh_Update";	
 		};
 	} else {
 		_towTruck setVariable ["MFTowIsTowing", false, true];
