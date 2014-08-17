@@ -57,6 +57,11 @@ if(_IsNearVehicle > 0) then {
 	if(!MF_Tow_Multi_Towing && (_vehicle getVariable ["MFTowIsTowing", false])) exitWith {
 		cutText [format["Cannot tow %1 because it is already towing another vehicle.", _vehicleNameText], "PLAIN DOWN"];
 	};
+
+	// Check that the vehicle we want to tow with is not already being towed
+	if(!MF_Tow_Multi_Towing && (_towTruck getVariable ["MFTowInTow", false])) exitWith {
+		cutText [format["Cannot tow %1 because %2 is already being towed.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
+	};
 	
 	// Check if the vehicle has anyone in it
 	if ((count (crew _vehicle)) != 0) exitWith {
