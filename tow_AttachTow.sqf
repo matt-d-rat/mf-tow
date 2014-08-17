@@ -64,8 +64,16 @@ if(count _findNearestVehicle > 0) then {
 	_vehicleNameText = [_vehicle] call MF_Tow_Get_Vehicle_Name;
 	_hasToolbox = "ItemToolbox" in (items player);
 	
-	if (_towTruckDir > 180) then {_towTruckDir = _towTruckDir - 360; };
-	if (_towableVehicleDir > 180) then {_towableVehicleDir = _towableVehicleDir - 360; };
+	_towVector = vectorDir _towTruck;
+	_vehVector = vectorDir _vehicle;
+	_difference = (_towVector select 0) * (_vehVector select 0) + (_towVector select 1) * (_vehVector select 1);
+	_facing = (_difference < 1 && _difference > .93);
+
+	_towVector = vectorDir _towTruck;
+	_vehVector = vectorDir _vehicle;
+	_difference = (_towVector select 0 * _vehVector select 0) + (_towVector select 1 * _vehVector select 1);
+	diag_log(format ["Difference: %1", _difference]);
+	
 	_facing = ((_towableVehicleDir > _towTruckDir - 25) && (_towableVehicleDir < _towTruckDir + 25));
 	
 	
