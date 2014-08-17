@@ -75,7 +75,9 @@ if(_isTowing) then {
 			detach _vehicle;
 			detach player;
 			_vehicle lock false; // Enable players to re-enter the vehicle now it has been detached.
-						
+			VDZE_veh_Lock = [_vehicle,false];
+			publicVariable "PVDZE_veh_Lock";
+			
 			_vehicle setVariable ["MFTowInTow", false, true];
 			_towTruck setVariable ["MFTowIsTowing", false, true];
 			_towTruck setVariable ["MFTowVehicleInTow", objNull, true];
