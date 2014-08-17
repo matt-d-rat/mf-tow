@@ -148,6 +148,8 @@ if(_IsNearVehicle > 0) then {
 				
 				detach player;
 				_vehicle lock true; // Disable entering the vehicle while it is in tow.
+				VDZE_veh_Lock = [_vehicle,true];
+				publicVariable "PVDZE_veh_Lock";
 				
 				_vehicle setVariable ["MFTowInTow", true, true];
 				_towTruck setVariable ["MFTowIsTowing", true, true];
