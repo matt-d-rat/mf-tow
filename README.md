@@ -4,7 +4,7 @@ MF-Tow
 
 ## Introduction ##
 
-MF-Tow enables vehicles to be towed by others. It has been designed to be highly configureable, allowing server admins to define which vehicles can tow, and what types of vehicles they can tow. 
+MF-Tow enables vehicles to be towed by others. It has been designed to be highly configurable, allowing server admins to define which vehicles can tow, and what types of vehicles they can tow. 
 
 This script builds upon the ideas laid down by the built-in tow system in DayZ Epoch, but with more features and a better configurable ease of use. 
 
