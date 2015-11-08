@@ -72,9 +72,21 @@ if(_isTowing) then {
 		};
 
 		if (_finished) then {
+		
+		//force save
+		PVDZE_veh_Update = [_vehicle, "all"];
+		publicVariableServer "PVDZE_veh_Update";
+		//force save
+		
 			detach _vehicle;
-			detach player;
-			_vehicle lock false; // Enable players to re-enter the vehicle now it has been detached.
+			
+		//Can`t sit in a car if car towing
+		_vehicle setVariable ["VehicleInTow", false, true];
+		
+		if !(MF_Tow_Multi_Towing_BTC) then {
+		_vehicle setVariable ["BTC_Cannot_Lift",false,true];
+		_towTruck setVariable ["BTC_Cannot_Lift",false,true];
+		};
 						
 			_vehicle setVariable ["MFTowInTow", false, true];
 			_towTruck setVariable ["MFTowIsTowing", false, true];
@@ -82,7 +94,18 @@ if(_isTowing) then {
 			cutText [format["%1 has been detached from %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 			
 			_vehicle setvelocity [0,0,1];
+	} else {
+				r_interrupt = false;
+			
+				if (vehicle player == player) then {
+					[objNull, player, rSwitchMove,""] call RE;
+					player playActionNow "stop";
+				};
+				_abort = true;
+				cutText [format["Failed to attach %1 to %2.", _vehicleNameText, _towTruckNameText], "PLAIN DOWN"];
 		};
+		
+		
 	} else {
 		_towTruck setVariable ["MFTowIsTowing", false, true];
 		_towTruck setVariable ["MFTowVehicleInTow", objNull, true];	
